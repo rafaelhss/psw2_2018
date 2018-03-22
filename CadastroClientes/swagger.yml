@@ -10,10 +10,9 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 
 # Added by API Auto Mocking Plugin
-host: "localhost:8080"
-basePath: /carledwin/v1
+host: "localhost:8090"
+basePath: /
 schemes:
- - https
  - http
     
 tags: 
@@ -24,7 +23,22 @@ tags:
 
 paths:
   
-  /clientes:
+  /cliente:
+    get:
+      tags: 
+        - "Consulta"
+      summary: "Busca de cliente"
+      operationId: "buscaClientes"
+      description: "|
+        endpoint *busca o* cliente."
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Cliente"
+          headers: {}
     
     post:
       tags: 
@@ -54,7 +68,7 @@ paths:
               type: "string"
               description: "uri do novo cliente."
   
-  /clientes/{id}:
+  /cliente/{id}:
     
     get:
       tags: 
@@ -95,6 +109,13 @@ paths:
         required: true
         type: "integer"
         format: "int32"
+      - in: "body"
+        name: "cliente"
+        description: "Informações do Cliente."
+        required: true
+        schema:
+          $ref: "#/definitions/Cliente"
+      
       responses:
         200:
           description: "Cliente alterado."
