@@ -20,22 +20,38 @@ import javax.persistence.OneToMany;
 public class Jogo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer identificador;
     private String jogador1;
     private String jogador2;
     private boolean finalizado;
+    private String vez;
+
+    public String getVez() {
+        return vez;
+    }
+
+    public void setVez(String vez) {
+        this.vez = vez;
+    }
+    
+
+    
+    
+    public Integer getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(Integer identificador) {
+        this.identificador = identificador;
+    }
+    
+    
+    
     
     @OneToMany
     private List<Jogada> jogadas;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
+  
     public String getJogador1() {
         return jogador1;
     }

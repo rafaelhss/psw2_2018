@@ -15,4 +15,6 @@ public interface JogoRepository extends CrudRepository<Jogo, Integer>{
 
     public Iterable<Jogo> findByFinalizado(Boolean finalizado);
     
+    public Jogo findByIdentificador(Integer identificador);
+    
 }
