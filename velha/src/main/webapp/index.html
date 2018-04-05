@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+        <script>
+            var app = angular.module("velhaApp",[])
+            app.controller("velhaCtrl", function($scope){
+                $scope.jogoativo = false;
+                
+                $scope.novoJogo = function(){
+                    $scope.vez = $scope.j1;
+                    $scope.quadrante = []
+                    $scope.jogoativo = true;
+                }
+                
+                $scope.clique = function(q) {
+                    console.log(q)
+                    $scope.quadrante[q] = $scope.vez;
+                    
+                    if($scope.vez == $scope.j1){
+                        $scope.vez = $scope.j2
+                    } else {
+                        $scope.vez = $scope.j1
+                    }
+                }
+                
+                
+            });
+        </script>
+    </head>
+    <body ng-app="velhaApp" ng-controller="velhaCtrl">
+        
+        <h1>Velha</h1>
+        <div ng-hide="jogoativo">
+            Jogador 1:<input ng-model="j1">
+            <br>
+            Jogador 2:<input ng-model="j2">
+            <br>
+            <button ng-click="novoJogo()">Novo Jogo</button>
+        </div>
+        
+        <br>
+        <div ng-show="jogoativo">
+            Vez: {{vez}}
+
+            <br>
+
+            <button ng-click="clique(11)">{{quadrante[11] || "Marcar"}}</button>
+            <button ng-click="clique(12)">{{quadrante[12] || "Marcar"}}</button>
+            <button ng-click="clique(13)">{{quadrante[13] || "Marcar"}}</button>
+            <br>
+            <button ng-click="clique(21)">{{quadrante[21] || "Marcar"}}</button>
+            <button ng-click="clique(22)">{{quadrante[22] || "Marcar"}}</button>
+            <button ng-click="clique(23)">{{quadrante[23] || "Marcar"}}</button>        
+            <br>
+            <button ng-click="clique(31)">{{quadrante[31] || "Marcar"}}</button>
+            <button ng-click="clique(32)">{{quadrante[32] || "Marcar"}}</button>
+            <button ng-click="clique(33)">{{quadrante[33] || "Marcar"}}</button>        
+
+        </div>
+        
+        
+    </body>
+</html>
