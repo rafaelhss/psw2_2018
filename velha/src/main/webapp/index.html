@@ -12,13 +12,28 @@ and open the template in the editor.
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
         <script>
             var app = angular.module("velhaApp",[])
-            app.controller("velhaCtrl", function($scope){
+            app.controller("velhaCtrl", function($scope, $http){
                 $scope.jogoativo = false;
                 
                 $scope.novoJogo = function(){
                     $scope.vez = $scope.j1;
                     $scope.quadrante = []
                     $scope.jogoativo = true;
+                    
+                    var jogo = {
+                        "jogador1": $scope.j1,
+                        "jogador2": $scope.j2
+                      }
+                    
+                    $http.post("/jogos", jogo)
+                            .then(function(dados){
+                                console.log("deu certo")
+                            }, function(erro){
+                                console.log("deu ruim")
+                            })
+                    console.log("Acabou!")
+                    
+                    
                 }
                 
                 $scope.clique = function(q) {
@@ -31,6 +46,9 @@ and open the template in the editor.
                         $scope.vez = $scope.j1
                     }
                 }
+                
+                
+                
                 
                 
             });
@@ -49,7 +67,7 @@ and open the template in the editor.
         
         <br>
         <div ng-show="jogoativo">
-            Vez: {{vez}}
+		    Vez: {{vez}}
 
             <br>
 
