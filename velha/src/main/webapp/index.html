@@ -15,6 +15,10 @@ and open the template in the editor.
             app.controller("velhaCtrl", function($scope, $http){
                 $scope.jogoativo = false;
                 
+                
+                
+                
+                
                 $scope.novoJogo = function(){
                     $scope.vez = $scope.j1;
                     $scope.quadrante = []
@@ -27,7 +31,10 @@ and open the template in the editor.
                     
                     $http.post("/jogos", jogo)
                             .then(function(dados){
-                                console.log("deu certo")
+                                
+                                $scope.idjogo = dados.data.identificador;
+                                console.log("deu certo: " + $scope.idjogo)
+                                
                             }, function(erro){
                                 console.log("deu ruim")
                             })
@@ -37,14 +44,24 @@ and open the template in the editor.
                 }
                 
                 $scope.clique = function(q) {
-                    console.log(q)
-                    $scope.quadrante[q] = $scope.vez;
                     
-                    if($scope.vez == $scope.j1){
-                        $scope.vez = $scope.j2
-                    } else {
-                        $scope.vez = $scope.j1
-                    }
+                    
+                    var jogada = {jogador:$scope.vez , quadrante:q}
+                    
+                    $http.post("/jogos/"+ $scope.idjogo +"/jogadas", jogada)
+                            .then(function(dados){
+                                $scope.quadrante[q] = $scope.vez;
+
+                                if($scope.vez == $scope.j1){
+                                    $scope.vez = $scope.j2
+                                } else {
+                                    $scope.vez = $scope.j1
+                                }
+                            }, function(erro){
+                                console.log(erro);
+                            });
+                    
+                    
                 }
                 
                 
