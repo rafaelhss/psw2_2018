@@ -36,6 +36,7 @@ public class VelhaController {
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/jogos", method = RequestMethod.POST)
     public Jogo criarJogo(@RequestBody Jogo jogo){
+        jogo.setVez(jogo.getJogador1());
         return jogoRepository.save(jogo);
     }
     
@@ -127,11 +128,8 @@ public class VelhaController {
                 && tabuleiro.get(q2) != null && tabuleiro.get(q2).equals(tabuleiro.get(q3))){
             jogo.setFinalizado(true);
             jogo.setVencedor(tabuleiro.get(q1));
-            System.out.println(q1 + " " + q2 + " " + q3 + ": true" );
             jogoRepository.save(jogo);
-        } else {
-            System.out.println(q1 + " " + q2 + " " + q3 + ": false" );
-        }
+        } 
         
     }
     

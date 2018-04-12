@@ -13,9 +13,29 @@ and open the template in the editor.
         <script>
             var app = angular.module("velhaApp",[])
             app.controller("velhaCtrl", function($scope, $http){
-                $scope.jogoativo = false;
+                $scope.jogoativo = false
+                
+                $scope.restaurar = function(jogo){
+                    $scope.idjogo = jogo.identificador
+                    $scope.j1 = jogo.jogador1
+                    $scope.j2 = jogo.jogador2
+                    $scope.vez = jogo.vez;
+                    $scope.jogoativo = true;
+                    $scope.quadrante = []
+                    $scope.vencedor = jogo.vencedor;
+                    console.log(jogo.jogadas)
+                    jogo.jogadas.forEach(function(item){
+                        $scope.quadrante[item.quadrante] = item.jogador
+                    })
+                }
                 
                 
+                $http.get("/jogos")
+                        .then(function(dados){
+                            $scope.jogosativos = dados.data;
+                        }, function(erro){
+                            console.log(erro);
+                        })
                 
                 
                 
@@ -89,6 +109,25 @@ and open the template in the editor.
             Jogador 2:<input ng-model="j2">
             <br>
             <button ng-click="novoJogo()">Novo Jogo</button>
+            
+            <h2>Jogos Ativos:</h2>
+            <table border="1px">
+                <thead>
+                    <th>Identificador</th>
+                    <th>Jogador 1</th>
+                    <th>Jogador2</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="jogo in jogosativos">
+                        <td>{{jogo.identificador}}</td>
+                        <td>{{jogo.jogador1}}</td>
+                        <td>{{jogo.jogador2}}</td>
+                        <td><button ng-click="restaurar(jogo)">restaurar</button></td>
+                    </tr>
+                </tbody>    
+                    
+            </table>
+                        
         </div>
         
         <br>
@@ -96,7 +135,6 @@ and open the template in the editor.
 		    Vez: {{vez}}
 
             <br>
-            teste: {{vencedor}}
             <div ng-show="vencedor">
                 <h1>Parabens {{vencedor}}, voce ganhou!</h1>
             </div>
