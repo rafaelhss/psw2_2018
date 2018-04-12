@@ -25,7 +25,17 @@ public class Jogo {
     private String jogador2;
     private boolean finalizado;
     private String vez;
+    private String vencedor;
 
+    public String getVencedor() {
+        return vencedor;
+    }
+
+    public void setVencedor(String vencedor) {
+        this.vencedor = vencedor;
+    }
+
+    
     public String getVez() {
         return vez;
     }

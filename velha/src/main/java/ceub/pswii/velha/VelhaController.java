@@ -6,6 +6,7 @@
 package ceub.pswii.velha;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -78,6 +79,8 @@ public class VelhaController {
                         jogoRepository.save(jogo);
                 }
             }
+            verificaFimJogo(jogo);
+            
         }
         
         return null;
@@ -88,6 +91,48 @@ public class VelhaController {
             value = "/jogos/{id}")
     public void deletarJogo(@PathVariable("id") Integer idJogo){
         jogoRepository.deleteById(idJogo);
+    }
+    
+    @CrossOrigin(origins = "*")
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/jogos/{id}")
+    public Jogo buscarJogo(@PathVariable("id") Integer idJogo){
+        return jogoRepository.findByIdentificador(idJogo);
+    }
+
+    private Jogo verificaFimJogo(Jogo jogo) {
+        
+        HashMap<String, String> tabuleiro = new HashMap<>();
+        for (Jogada jogada : jogo.getJogadas()) {
+            tabuleiro.put(jogada.getQuadrante(), jogada.getJogador());
+        }
+        final String q1 = "11";
+        final String q2 = "12";
+        final String q3 = "13";
+        
+        verificaPossibilidade(tabuleiro, "11", "12", "13", jogo); 
+        verificaPossibilidade(tabuleiro, "21", "22", "23", jogo); 
+        verificaPossibilidade(tabuleiro, "31", "32", "33", jogo); 
+        verificaPossibilidade(tabuleiro, "11", "21", "31", jogo); 
+        verificaPossibilidade(tabuleiro, "21", "22", "32", jogo); 
+        verificaPossibilidade(tabuleiro, "13", "23", "33", jogo); 
+        verificaPossibilidade(tabuleiro, "11", "22", "33", jogo); 
+        verificaPossibilidade(tabuleiro, "13", "22", "31", jogo); 
+        
+        return jogo;
+    }
+
+    private void verificaPossibilidade(HashMap<String, String> tabuleiro, final String q1, final String q2, final String q3, Jogo jogo) {
+        if(tabuleiro.get(q1) != null && tabuleiro.get(q1).equals(tabuleiro.get(q2))
+                && tabuleiro.get(q2) != null && tabuleiro.get(q2).equals(tabuleiro.get(q3))){
+            jogo.setFinalizado(true);
+            jogo.setVencedor(tabuleiro.get(q1));
+            System.out.println(q1 + " " + q2 + " " + q3 + ": true" );
+            jogoRepository.save(jogo);
+        } else {
+            System.out.println(q1 + " " + q2 + " " + q3 + ": false" );
+        }
+        
     }
     
     

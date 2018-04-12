@@ -57,6 +57,15 @@ and open the template in the editor.
                                 } else {
                                     $scope.vez = $scope.j1
                                 }
+                                
+                                $http.get("/jogos/"+ $scope.idjogo)
+                                .then(function(dados){
+                                    $scope.vencedor = dados.data.vencedor;
+                                },function(erro){
+                                    console.log(erro)
+                                })
+                                
+                                
                             }, function(erro){
                                 console.log(erro);
                             });
@@ -87,6 +96,10 @@ and open the template in the editor.
 		    Vez: {{vez}}
 
             <br>
+            teste: {{vencedor}}
+            <div ng-show="vencedor">
+                <h1>Parabens {{vencedor}}, voce ganhou!</h1>
+            </div>
 
             <button ng-click="clique(11)">{{quadrante[11] || "Marcar"}}</button>
             <button ng-click="clique(12)">{{quadrante[12] || "Marcar"}}</button>
