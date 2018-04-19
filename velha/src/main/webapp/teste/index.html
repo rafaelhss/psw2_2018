@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+<body>
+
+    <script>
+        var app = angular.module('velhaApp', ["ngRoute"]);
+        app.controller('velhaCtrl', function($scope) {
+            $scope.name= "John";
+            $scope.lastName= "Doe";
+            
+            $scope.clique = function(){
+                console.log("teste");
+            }
+            
+            
+        });
+        
+        app.controller("mainCtrl", function ($scope, $location) {
+            $scope.msg = "I love London";
+            
+            $scope.loadJogo = function(jogo){
+                $location.path("/jogo"+jogo)
+            }
+        });
+        
+        app.controller("jogoCtrl",function($scope,$routeParams){
+            $scope.njogo=$routeParams.njogo
+         });
+        
+        app.config(function($routeProvider) {
+            $routeProvider
+            .when("/", {
+                templateUrl : "main.html",
+                controller : "mainCtrl"
+            })
+            .when("/jogo:njogo", {
+                templateUrl : "jogo.html",
+                controller : "jogoCtrl"
+            })
+            .when("/green", {
+                templateUrl : "green.html"
+            })
+            .when("/blue", {
+                templateUrl : "blue.html"
+            });
+        });
+    </script>    
+    
+    
+<div ng-app="velhaApp" ng-controller="velhaCtrl">
+  <p>Name : <input type="text" ng-model="name"></p>
+  <h1>Hello {{name}}</h1>
+  Samba
+  <button ng-click="clique()">teste</button>
+  
+  <hr>    
+  
+  <ng-view></ng-view>
+</div>
+    
+    
+
+</body>
+</html>

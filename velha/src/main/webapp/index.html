@@ -1,158 +1,143 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-        <script>
-            var app = angular.module("velhaApp",[])
-            app.controller("velhaCtrl", function($scope, $http){
-                $scope.jogoativo = false
+<html lang="en-US">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<body>
+
+    <script>
+        var preencherTabuleiro = function(jogadas,$scope){
+            jogadas.forEach(function(jogada){
+                console.log(jogada)
                 
-                $scope.restaurar = function(jogo){
-                    $scope.idjogo = jogo.identificador
-                    $scope.j1 = jogo.jogador1
-                    $scope.j2 = jogo.jogador2
-                    $scope.vez = jogo.vez;
-                    $scope.jogoativo = true;
-                    $scope.quadrante = []
-                    $scope.vencedor = jogo.vencedor;
-                    console.log(jogo.jogadas)
-                    jogo.jogadas.forEach(function(item){
-                        $scope.quadrante[item.quadrante] = item.jogador
+                $scope.quadrantes[jogada.quadrante] = jogada.jogador
+            })
+        }
+        
+        
+        var app = angular.module('velhaApp', []);
+        app.controller('velhaCtrl', function($scope, $http) {
+           
+           $scope.varteste = "batata";
+           
+           
+           
+           $scope.teste = function(){
+               $scope.varteste = "maca";
+           }
+           
+           
+           
+           $scope.novoJogo = function(j1, j2){
+               var jogo = { 
+                    "jogador1": j1,
+                    "jogador2": j2,
+                    "jogadas": []
+                  }
+               
+               $scope.j1 = j1;
+               $scope.j2 = j2;
+               
+               
+               $http.post("jogos", jogo).
+                    then(function(dados){
+                        console.log("Deu")
+                        console.log(dados)
+                        $scope.quadrantes = []
+                        $scope.njogo = dados.data.identificador
+                        $scope.vez = j1
+                    }, function(dados){
+                        console.log("Erro")
+                        console.log(dados)
                     })
-                }
-                
-                
-                $http.get("/jogos")
-                        .then(function(dados){
-                            $scope.jogosativos = dados.data;
-                        }, function(erro){
-                            console.log(erro);
-                        })
-                
-                
-                
-                $scope.novoJogo = function(){
-                    $scope.vez = $scope.j1;
-                    $scope.quadrante = []
-                    $scope.jogoativo = true;
-                    
-                    var jogo = {
-                        "jogador1": $scope.j1,
-                        "jogador2": $scope.j2
-                      }
-                    
-                    $http.post("/jogos", jogo)
-                            .then(function(dados){
-                                
-                                $scope.idjogo = dados.data.identificador;
-                                console.log("deu certo: " + $scope.idjogo)
-                                
-                            }, function(erro){
-                                console.log("deu ruim")
-                            })
-                    console.log("Acabou!")
-                    
-                    
-                }
-                
-                $scope.clique = function(q) {
-                    
-                    
-                    var jogada = {jogador:$scope.vez , quadrante:q}
-                    
-                    $http.post("/jogos/"+ $scope.idjogo +"/jogadas", jogada)
-                            .then(function(dados){
-                                $scope.quadrante[q] = $scope.vez;
-
-                                if($scope.vez == $scope.j1){
-                                    $scope.vez = $scope.j2
-                                } else {
-                                    $scope.vez = $scope.j1
-                                }
-                                
-                                $http.get("/jogos/"+ $scope.idjogo)
-                                .then(function(dados){
-                                    $scope.vencedor = dados.data.vencedor;
-                                },function(erro){
-                                    console.log(erro)
-                                })
-                                
-                                
-                            }, function(erro){
-                                console.log(erro);
-                            });
-                    
-                    
-                }
-                
-                
-                
-                
-                
-            });
-        </script>
-    </head>
-    <body ng-app="velhaApp" ng-controller="velhaCtrl">
-        
-        <h1>Velha</h1>
-        <div ng-hide="jogoativo">
-            Jogador 1:<input ng-model="j1">
-            <br>
-            Jogador 2:<input ng-model="j2">
-            <br>
-            <button ng-click="novoJogo()">Novo Jogo</button>
-            
-            <h2>Jogos Ativos:</h2>
-            <table border="1px">
-                <thead>
-                    <th>Identificador</th>
-                    <th>Jogador 1</th>
-                    <th>Jogador2</th>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="jogo in jogosativos">
-                        <td>{{jogo.identificador}}</td>
-                        <td>{{jogo.jogador1}}</td>
-                        <td>{{jogo.jogador2}}</td>
-                        <td><button ng-click="restaurar(jogo)">restaurar</button></td>
-                    </tr>
-                </tbody>    
-                    
-            </table>
+           }
+           
+           $scope.marcar = function(quadrante){
+               var jogada = {
+                    "jogador": $scope.vez,
+                    "quadrante": quadrante
+                  }
+               
+               
+               $http.post("jogos/" + $scope.njogo + "/jogadas", jogada).
+                    then(function(data){
+                        console.log("Deu")
                         
-        </div>
+                        if($scope.vez == $scope.j1){
+                            $scope.vez = $scope.j2
+                        } else {
+                            $scope.vez = $scope.j1
+                        }
+                        
+                        console.log(data)
+                        $http.get("jogos/" + $scope.njogo)
+                                .then(
+                                    function(data){
+                                        preencherTabuleiro(data.data.jogadas,$scope)
+                                    }, 
+                                    function(error){ console.log("Erro")
+                                        console.log(error)
+                                    }
+                                )
+                        
+                        
+                        
+                    }, function(error){
+                        console.log("Erro")
+                        console.log(error)
+                    })
+           }
+           
+        });
         
-        <br>
-        <div ng-show="jogoativo">
-		    Vez: {{vez}}
+       
+    </script>    
+    
+    
+<div ng-app="velhaApp" ng-controller="velhaCtrl">
+  <h1>Velha</h1>
+  
+  
+  
+  {{varteste}}
+  
+  
+  
+  <a ng-click="teste()">clique-me</a>
+  
+  
+  <p></p>
+  esquece daqui pra baixo!!!
+  
+  
+  <div ng-hide="njogo < 1">
+      <p>Jogador 1 : <input type="text" ng-model="j1"></p>
+      <p>Jogador 2 : <input type="text" ng-model="j2"></p>
+      
+      <button ng-click="novoJogo(j1, j2)">Novo jogo</button>
+  </div>
+  
+  <div ng-show="njogo >= 1">
+      <h1>Jogo {{njogo}}
+      Agora eh a vez de {{vez}}
+      <br>
+      <button ng-click="marcar(11)">{{quadrantes[11] || "Marcar"}}</button>    
+      <button ng-click="marcar(12)">{{quadrantes[12] || "Marcar"}}</button>    
+      <button ng-click="marcar(13)">{{quadrantes[13] || "Marcar"}}</button>    
+      <br>
+      <button ng-click="marcar(21)">{{quadrantes[21] || "Marcar"}}</button>    
+      <button ng-click="marcar(22)">{{quadrantes[22] || "Marcar"}}</button>    
+      <button ng-click="marcar(23)">{{quadrantes[23] || "Marcar"}}</button>    
+      <br>
+      <button ng-click="marcar(31)">{{quadrantes[31] || "Marcar"}}</button>    
+      <button ng-click="marcar(32)">{{quadrantes[32] || "Marcar"}}</button>    
+      <button ng-click="marcar(33)">{{quadrantes[33] || "Marcar"}}</button>    
+  </div>
+  
+  
+  
+  <hr>    
+</div>
+    
+    
 
-            <br>
-            <div ng-show="vencedor">
-                <h1>Parabens {{vencedor}}, voce ganhou!</h1>
-            </div>
-
-            <button ng-click="clique(11)">{{quadrante[11] || "Marcar"}}</button>
-            <button ng-click="clique(12)">{{quadrante[12] || "Marcar"}}</button>
-            <button ng-click="clique(13)">{{quadrante[13] || "Marcar"}}</button>
-            <br>
-            <button ng-click="clique(21)">{{quadrante[21] || "Marcar"}}</button>
-            <button ng-click="clique(22)">{{quadrante[22] || "Marcar"}}</button>
-            <button ng-click="clique(23)">{{quadrante[23] || "Marcar"}}</button>        
-            <br>
-            <button ng-click="clique(31)">{{quadrante[31] || "Marcar"}}</button>
-            <button ng-click="clique(32)">{{quadrante[32] || "Marcar"}}</button>
-            <button ng-click="clique(33)">{{quadrante[33] || "Marcar"}}</button>        
-
-        </div>
-        
-        
-    </body>
+</body>
 </html>
