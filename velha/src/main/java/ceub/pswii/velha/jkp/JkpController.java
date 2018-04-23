@@ -19,16 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class JkpController {
-    private int TESOURA = 0;
+	private int PEDRA = 0;
     private int PAPEL = 1;
-    private int PEDRA = 2;
+    private int TESOURA = 2;
     private int SPOCK = 3;
     private int LAGARTO = 4;
     
     @Autowired
     private JogoJkpRepository jkpRepository;
     
-    @RequestMapping(value="/jogador/{nome}/jogos", method = RequestMethod.POST)
+    @RequestMapping(value="jogador/{nome}/jogos", method = RequestMethod.POST)
     public void criarJogo(@PathVariable("nome") String nome,
                             @RequestBody JogoJkp jogo){
         

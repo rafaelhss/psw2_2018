@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+
+<script>
+
+var app = angular.module("jkpApp", []);
+
+app.controller("jkpCtrl", function($scope, $http){
+	
+	$scope.jogar =  function(opcao){
+		
+		var url = "jogador/" + $scope.nome + "/jogos";
+		
+		var jogada = {
+				"nomeJogador":$scope.nome,
+				"jogada": opcao
+		}
+		
+		var fSucesso = function(){
+			alert("Foi!");
+		}
+		
+		var fErro = function(){
+			alert("Deu bad");
+		}
+		
+		$http.post(url,jogada).then(fSucesso, fErro);
+		
+		alert("clicou: " + opcao);
+		alert("url: " + url)
+	}
+	
+});
+
+
+</script>
+
+</head>
+
+<body ng-app="jkpApp" ng-controller="jkpCtrl">
+
+<input ng-model="nome">
+
+<button ng-click="jogar(0)">Pedra</button>
+<button ng-click="jogar(1)">Papel</button>
+<button ng-click="jogar(2)">Tesoura</button>
+<button ng-click="jogar(3)">Spock</button>
+<button ng-click="jogar(4)">Lagarto</button>
+
+</body>
+</html>
